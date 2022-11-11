@@ -6,8 +6,17 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+  font-family: Raleway -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  scroll-behavior: smooth;
+}
+
+.custom-font{
+  font-family: Raleway;
+}
+
+.custom-card-bg{
+  background-image: url('https://cdn.riddle.com/embeds/v2/images/q_80,c_fill,w_960,h_540/434/43466c4dfb6c12311075b0289b1ac84c.png')
 }
 
 a {
