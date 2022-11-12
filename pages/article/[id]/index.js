@@ -2,38 +2,41 @@ import { useRouter } from "next/router"
 import Link from "next/link"
 import Meta from "../../../components/Meta"
 import { useQuery } from "react-query"
+import { useEffect, useState } from "react"
 
 
 export default function article(){
     //option 1
-    // const router = useRouter()
-    // const {id} = router.query
+    const router = useRouter()
+    const {id} = router.query
     
-    //use useeffect to query api with the given id
-    const fetchPhoto = async () => {
-        const res = await fetch(`https://jsonplaceholder.typicode.com/photos/1`)
+    const fetchPhoto = async ({queryKey}) => {
+        const res = await fetch(`https://jsonplaceholder.typicode.com/photos/${queryKey[1]}`)
         return res.json()
     }
-    const {data, status} = useQuery("photo", fetchPhoto)
+    const {data, status, error} = useQuery(["photo", id], fetchPhoto)
+
+    
     if (status === 'loading'){
-        <div>Loading...</div>
+        return <div>Loading...</div>
     }
 
     if (status === 'error'){
-        <div>ERROR!</div>
+        return <div>{error.message}</div>
     }
+    
 
-    if (status === 'success'){
-        <div>data!</div>
-    }
+    console.log(status)
+    
+
+    
     return(
         <div className="items-center justify-center">
-            
             <Meta />
-            <h1 className='text-4xl font-bold text-center mt-10 mb-5 ml-[10%] mr-[20%]'>{}</h1>
-            <p className="text-center ml-[10%] mr-[20%]">{}</p>
+            <h1 className='text-4xl font-bold text-center mt-10 mb-5 ml-[10%] mr-[20%]'>{data.id}</h1>
+            <p className="text-center ml-[10%] mr-[20%]">{data.title}</p>
             <br/>
-            <Link href='/'><p className="text-center">Go Back</p> </Link>
+            <Link href='/'><p className="text-center">Go Back</p> </Link>   
         </div>
     )
 }
