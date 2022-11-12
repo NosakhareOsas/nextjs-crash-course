@@ -14,7 +14,7 @@ export default function article(){
         const res = await fetch(`https://jsonplaceholder.typicode.com/photos/${queryKey[1]}`)
         return res.json()
     }
-    const {data, status, error} = useQuery(["photo", id], fetchPhoto)
+    const {data, status, error} = useQuery(["photo", id], fetchPhoto, {keepPreviousData: true})
 
     
     if (status === 'loading'){
