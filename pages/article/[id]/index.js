@@ -1,21 +1,16 @@
 import { useRouter } from "next/router"
 import Link from "next/link"
 import Meta from "../../../components/Meta"
-import { useQuery } from "react-query"
-import { useEffect, useState } from "react"
-
+import { dehydrate, QueryClient, useQuery } from 'react-query';
+import Image from 'next/image'
+import useFetch from "../../../customHooks/useFetch"
 
 export default function article(){
     //option 1
-    const router = useRouter()
-    const {id} = router.query
+    const { query } = useRouter()
+    const { id } = query
     
-    const fetchPhoto = async ({queryKey}) => {
-        const res = await fetch(`https://jsonplaceholder.typicode.com/photos/${queryKey[1]}`)
-        return res.json()
-    }
-    const {data, status, error} = useQuery(["photo", id], fetchPhoto, {keepPreviousData: true})
-
+    const { data, status, error } = useQuery(['photo', id], ()=>useFetch(`https://jsonplaceholder.typicode.com/photos/${id}`))
     
     if (status === 'loading'){
         return <div>Loading...</div>
@@ -36,10 +31,30 @@ export default function article(){
             <h1 className='text-4xl font-bold text-center mt-10 mb-5 ml-[10%] mr-[20%]'>{data.id}</h1>
             <p className="text-center ml-[10%] mr-[20%]">{data.title}</p>
             <br/>
+            <Image
+                src='https://media.4-paws.org/a/5/3/7/a537f08d227326121b80790ba54036498668c9c8/VIER%20PFOTEN_2016-07-08_011-4993x3455-1920x1329.jpg'
+                alt="Picture of the author"
+                width={400}
+                height={400}
+            />
             <Link href='/'><p className="text-center">Go Back</p> </Link>   
         </div>
     )
 }
+
+export const getServerSideProps = async (context) => {
+    const queryClient = new QueryClient()
+    await queryClient.prefetchQuery(['photo', context.params.id], ()=>useFetch(`https://jsonplaceholder.typicode.com/photos/${context.params.id}`))
+    return {
+        props: {dehydratedState: dehydrate(queryClient),}
+    }
+}
+
+
+
+
+
+
 //option 2 fetch on request
 // export const getServerSideProps = async (context) => {
 //     const res = await fetch(
